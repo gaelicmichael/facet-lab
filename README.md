@@ -1,3 +1,7 @@
+# React Commponents for Faceted Items
+
+Project by Michael Newton, inspired by previous work on the Prospect Digital Humanities Collaboratory. 
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
