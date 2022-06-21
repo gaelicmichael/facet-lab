@@ -7,7 +7,9 @@
  */
 
 import React, { Fragment, useState, useContext } from 'react';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import { Group } from '@vx/group';
 
 const blueLight = '#ADD8E6';
@@ -42,9 +44,11 @@ function FacetBrowser(props) {
     } // clickReset()
 
     return (
-        <Fragment>
-            <Button variant="outlined" onClick={clickReset}>Reset</Button>
-            <svg width={totalWidth} height={totalHeight}>
+        <Box>
+            <ButtonGroup size="small" sx={{ margin: '4px' }}>
+                <Button variant="outlined" onClick={clickReset}>Reset</Button>
+            </ButtonGroup>
+            <Box><svg width={totalWidth} height={totalHeight}>
                 { displayFacets.map((fIndex, fIIndex) => {
                     const leftPos = (fIIndex * (barWidth + barHGap));
                     const fValueCounts = feList.getFacetValueCounts(fIndex, indexList);
@@ -72,8 +76,8 @@ function FacetBrowser(props) {
                     </Group>
                     )
                 })}
-            </svg>
-        </Fragment>
+            </svg></Box>
+        </Box>
     )
 } // FacetBrowser
 

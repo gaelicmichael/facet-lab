@@ -75,11 +75,10 @@ function App() {
               </Typography>
               <FormControl sx={{ marginLeft: '20px' }}>
                 <RadioGroup row defaultValue="DirectoryList" name="radio-buttons-group" value={activeComp} onChange={changeActiveComp}>
-                  <FormControlLabel value="DirectoryList" control={<Radio />} label="DirectoryList" />
-                  <FormControlLabel value="FacetBrowser" control={<Radio />} label="FacetBrowser" />
+                  <FormControlLabel value="DirectoryList" control={<Radio />} label="Directory List" />
+                  <FormControlLabel value="FacetBrowser" control={<Radio />} label="Facet Browser" />
                 </RadioGroup>
               </FormControl>
-              {activeComp}
             </Toolbar>
           </AppBar>
           {{ 
