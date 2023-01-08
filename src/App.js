@@ -1,90 +1,98 @@
 /***
- * Horizontal Timelines
- * 
  * NOTES
- *    Technique of using reducer with Context from https://www.sitepoint.com/replace-redux-react-hooks-context-api/
- *    See also https://medium.com/simply/state-management-with-react-hooks-and-context-api-at-10-lines-of-code-baf6be8302c
+ *    Details about using context https://medium.com/simply/state-management-with-react-hooks-and-context-api-at-10-lines-of-code-baf6be8302c
  ***/
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
+//===========================
+// Custom components and code
 
-//====================================================
-// Objects, Modules and Components defined by this App
-
-import FacetedEntityList from './FacetedEntityList.js';
-import DirectoryList from './components/DirectoryList.jsx';
-import FacetBrowser from './components/FacetBrowser';
-
-//====
-// Render switch
-
-const componentRender = {
-    dList: "DirectoryList",
-    fBrowser: "FacetBrowser",
-}
-
+import { FacetedDBProvider } from './data-modules/FacetedDBContext';
+import FacetedDBInterface from './data-modules/FacetedDBInterface';
+import TabbedPanels from './components/TabbedPanels';
 
 //===============================
-// Temp data
+// App Visualization Data
+<option value="Work">Work</option>
 
-const facetNames = [
-  ['Gender', 'Male', 'Female', 'Unknown', 'Non-Binary'],
-  ['Age Group', '0-5', '5-18', '18-35', '35+'],
-  ['Languages', 'English', 'Spanish', 'Gaelic', 'Chinese']
-];
-const itemList = [
-  { name: 'Róisín', facets: [[2], [2], [1, 2, 3]] },
-  { name: 'Mìcheal', facets: [[1], [4], [1, 3]]},
-  { name: 'Xing', facets: [[3], [3], [1, 4]]},
-  { name: 'Zander', facets: [[4], [1], [2, 4]]},
-  { name: 'Fred', facets: [[4], [3], [1]]},
-];
-const facetsToDisplay = [0, 1, 2];
-let indexList = Array(itemList.length).fill().map((_, i) => i);
+const facetDescriptors = {
+  classifications: { label: 'Classifications', multi: true, values: 
+    ["Ballad", "Bawdy", "Clapping", "Complaint", "Dialogue", "Drinking", "Elegy", "Exile",
+    "Flyting", "Historical", "Homeland", "Humorous", "Instructive", "Lament", "Local events and characters",
+    "Love", "Lullaby", "Macaronic", "Milling", "Nature", "Pibroch", "Political", "Port-a-beul", "Praise",
+    "Rann / Duan", "Religious", "Sailing", "Satire", "Spiritual", "Supernatural", "Work"
+    ] },
+  'place_of_origin': { label: 'Origin', multi: false, values: ["Nova Scotia", "Scotland"] },
+  'original_format': { label: 'Media', multi: false, values:
+    ["Manuscript", "Newspaper Clipping", "Publication", "Sound Recording"] }
+};
 
-const itemsObject = new FacetedEntityList(facetNames, itemList);
+const topTitleStyle = {
+  width: "100%",
+  padding: "8px",
+  bgcolor: "#ADD8E6",
+  fontWeight: 600,
+  fontSize: "24px",
+}
 
+const centerLoadingStyle = {
+  marginTop: "20px",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+}
+
+const messageStyle = {
+  marginBottom: "10px",
+}
+
+const apiCall = "https://dasg.ac.uk/LIL/ajax.php?action=browseRecords&search=&sort=&order=&offset=0&limit=7000&searchStrings=&searchFields=&booleans=&params=&getText=n&format=json";
 
 function App() {
-  const [activeComp, setActiveComp] = React.useState('DirectoryList');
+  const [facetedDB, setFacetedDB] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
-  function changeActiveComp(event) {
-    setActiveComp(event.target.value);
-  }
+  useEffect(getDataFromAPI, []);
+
+  function getDataFromAPI() {
+console.log("Calling fetch");
+    fetch(apiCall)
+      .then((response) => response.json())
+      .then(function(data) {
+        const dbInterface = new FacetedDBInterface(data.rows, facetDescriptors);
+        const numFacets = dbInterface.getNumFacets();
+        const facetNames = dbInterface.getFacetNames();
+        let filterValues = [];
+        for (let i=0; i<numFacets; i++) { filterValues.push(-1); }
+        const objects = dbInterface.getRawData();
+        setFacetedDB({ dbInterface, numFacets, facetNames, filterValues, objects });
+        setIsLoading(false);
+      })
+      .catch(function(error) { console.log('Data fetch request failed: ', error) });
+  } // getDataFromAPI()
 
   return (
     <Fragment>
-          <AppBar position="static">
-            <Toolbar variant="dense">
-              <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" color="inherit" component="div">
-                Faceted Items
-              </Typography>
-              <FormControl sx={{ marginLeft: '20px' }}>
-                <RadioGroup row defaultValue="DirectoryList" name="radio-buttons-group" value={activeComp} onChange={changeActiveComp}>
-                  <FormControlLabel value="DirectoryList" control={<Radio />} label="Directory List" />
-                  <FormControlLabel value="FacetBrowser" control={<Radio />} label="Facet Browser" />
-                </RadioGroup>
-              </FormControl>
-            </Toolbar>
-          </AppBar>
-          {{ 
-              [componentRender.dList]: <DirectoryList feList={itemsObject} displayFacets={facetsToDisplay} indexList={indexList} />,
-              [componentRender.fBrowser]: <FacetBrowser feList={itemsObject} displayFacets={facetsToDisplay} indexList={indexList} />,
-          }[activeComp]}
+      <Box sx={topTitleStyle}>
+        Language In Lyrics Explorer
+      </Box>
+      { isLoading &&
+        <Box sx={centerLoadingStyle}>
+          <Typography sx={messageStyle}>Loading and Processing Song Meta-Data</Typography>
+          <CircularProgress />
+        </Box>
+      }
+      { !isLoading &&
+        <FacetedDBProvider initialState={facetedDB}>
+          <TabbedPanels />
+        </FacetedDBProvider>
+      }
     </Fragment>
   );
 } // App
