@@ -1,9 +1,9 @@
 // Dialog that displays Song entry
 
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 
 import Button from '@mui/material/Button';
-import Dialog, { DialogProps } from '@mui/material/Dialog';
+import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -42,7 +42,8 @@ export default function DialogOpenRecord(props) {
   let subjects = getField('subjects');
   let origin = getField('place_of_origin');
   let community = getField('community');
-  let author = getField('composer_first_name') + ' ' + getField('composer_last_name');
+  let authorFirst = getField('composer_first_name');
+  let authorLast = getField('composer_last_name');
   let originalFormat = getField('original_format');
   let online = getField('online_access');
 
@@ -55,14 +56,26 @@ export default function DialogOpenRecord(props) {
         <DialogTitle id="scroll-dialog-title">Title: {title}</DialogTitle>
         <DialogContent dividers={true}>
           <DialogContentText id="scroll-dialog-description" ref={descriptionElementRef} tabIndex={-1}>
-            <b>Chorus:</b> {chorus}<br/>
-            <b>First Line:</b> {line1}<br/>
+            { (chorus !== "") &&
+            <>
+                <b>Chorus:</b> {chorus}<br/>
+            </> }
+            { (line1 !== "") &&
+            <>
+                <b>First Line:</b> {line1}<br/>
+            </> }
             <b>Classifications:</b> {classifications}<br/>
             <b>Subjects:</b> {subjects}<br/>
-            <b>Origin:</b> {community}, {origin}<br/>
-            <b>Author:</b> {author}<br/>
+            <b>Origin:</b> {community ? community + ", " : ""} {origin}<br/>
+            { (authorFirst !== "" || authorLast !== "") &&
+            <>
+                <b>Author:</b> {authorFirst} {authorLast}<br/>
+            </> }
             <b>Original Format:</b> {originalFormat}<br/>
-            <b>Online At:</b> <a href="{online}">{online}</a>
+            { (online !== "") &&
+            <>
+                <b>Online At:</b> <a href="{online}">{online}</a>
+            </> }
           </DialogContentText>
         </DialogContent>
         <DialogActions>
