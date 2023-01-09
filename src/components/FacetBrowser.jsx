@@ -59,7 +59,7 @@ function FacetBrowser(props) {
                     const fValueCounts = dbInterface.getFacetValueCounts(fIndex, true);
 
                     return (
-                    <Group top={0} left={leftPos} key={`flabel-${fIndex}`}>
+                    <Group top={0} left={leftPos} key={`flabel-${fIndex}`} className="group-selectable" >
                         <rect height={barHeight} width={barWidth} y={0} x={0}
                               fill={facetLabelBGColor} onClick={() => { clickFacetValue(fIndex, -1) }} />
                         <text x={6} y={barHeight-6} fontSize={14} fill={'black'} fillOpacity={1} textAnchor="left">

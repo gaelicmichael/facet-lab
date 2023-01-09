@@ -79,9 +79,23 @@ function TabbedPanels(props) {
       </Box>
       <TabPanel value={tabValue} index={0}>
         <Box>
-          This is an experimental front-end for the <a href="https://languageinlyrics.com"><i>Language In Lyrics</i></a> database that provides flexible filtering and
-          visualization capabilities to allow you to explore the information in complex and creative ways. This dashboard was designed and implemented by Michael Newton.
+          This is an experimental dashboard for the <a href="https://languageinlyrics.com"><i>Language In Lyrics</i></a> database that provides flexible filtering and
+          visualization capabilities. It allowa you to explore the information in complex and creative ways. I (Michael Newton) designed and implemented this dashboard,
+          inspired by my previous work on the Prospect Digital Humanities Collaboratory, which I created during my tenure as Technical Lead at the UNC Digital Innovation Lab.
           Thanks to Stephen Barrett for adding needed functionality to the <i>LIL</i> API.
+        </Box>
+        <Box>
+          <ul>
+            <li>First, click on the <b>Filter</b> tab and click the combination of features of the data in which you are interested.
+            If you click a facet title (at the top of the column), it will deselect any selection you have made in that column.</li>
+            <li>If you click on the <b>Results</b> tab, you can scroll through all of the records that have passed the conditions of
+            the facet filters you have selected.</li>
+            <li>Click the <b>Visualize</b> tab to look at patterns in the resulting data.</li>
+          </ul>
+        </Box>
+        <Box>
+          This web application is implemented in the React framework, making use of the Material UI component library and the Visx data visualization library. The source code is
+          available on <a href="https://github.com/gaelicmichael/facet-lab">this GitHub repository</a>.
         </Box>
       </TabPanel>
       <TabPanel value={tabValue} index={1}>

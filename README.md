@@ -1,6 +1,10 @@
 # React Commponents for Faceted Items
 
-Project by Michael Newton, inspired by previous work on the Prospect Digital Humanities Collaboratory. 
+An interactive facet browser and data visuaization project by Michael Newton, inspired by my previous work on the Prospect Digital Humanities Collaboratory, which I created during my tenure as Technical Lead at the UNC Digital Innovation Lab.
+
+This facet browser allows users to explore the database produced by the [Language In Lyrics](https://languageinlyrics.com) project.
+
+It has been implemented in the React framework, making use of the Material UI component library and the Visx data visualization library.
 
 # Getting Started with Create React App
 
