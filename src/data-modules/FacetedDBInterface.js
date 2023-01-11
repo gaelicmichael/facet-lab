@@ -95,6 +95,10 @@ class FacetedDBInterface {
     return this.facetNames[fIndex];
   }
 
+  getFacetLabels() {
+    return this.facetNames.map(fName => this.facetInfo[fName].label);
+  }
+
   getFacetLabel(fIndex) {
     const thisFacetName = this.facetNames[fIndex];
     return this.facetInfo[thisFacetName].label;

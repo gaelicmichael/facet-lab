@@ -4,6 +4,7 @@
 
 import React from 'react';
 
+import Typography from '@mui/material/Typography';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
@@ -13,6 +14,7 @@ import Box from '@mui/material/Box';
 
 import DirectoryList from '../components/DirectoryList.jsx';
 import FacetBrowser from '../components/FacetBrowser';
+import VisualizerPanel from '../components/VisualizerPanel';
 
 //=============================
 // Tab components
@@ -79,10 +81,10 @@ function TabbedPanels(props) {
       </Box>
       <TabPanel value={tabValue} index={0}>
         <Box>
-          This is an experimental dashboard for the <a href="https://languageinlyrics.com"><i>Language In Lyrics</i></a> database that provides flexible filtering and
+          <Typography>This is an experimental dashboard for the <a href="https://languageinlyrics.com"><i>Language In Lyrics</i></a> database that provides flexible filtering and
           visualization capabilities. It allowa you to explore the information in complex and creative ways. I (Michael Newton) designed and implemented this dashboard,
           inspired by my previous work on the Prospect Digital Humanities Collaboratory, which I created during my tenure as Technical Lead at the UNC Digital Innovation Lab.
-          Thanks to Stephen Barrett for adding needed functionality to the <i>LIL</i> API.
+          Thanks to Stephen Barrett for adding needed functionality to the <i>LIL</i> API.</Typography>
         </Box>
         <Box>
           <ul>
@@ -90,12 +92,12 @@ function TabbedPanels(props) {
             If you click a facet title (at the top of the column), it will deselect any selection you have made in that column.</li>
             <li>If you click on the <b>Results</b> tab, you can scroll through all of the records that have passed the conditions of
             the facet filters you have selected.</li>
-            <li>Click the <b>Visualize</b> tab to look at patterns in the resulting data.</li>
+            <li>Click the <b>Visualize</b> tab to explore patterns in the resulting data using a Treemap visualization.</li>
           </ul>
         </Box>
         <Box>
-          This web application is implemented in the React framework, making use of the Material UI component library and the Visx data visualization library. The source code is
-          available on <a href="https://github.com/gaelicmichael/facet-lab">this GitHub repository</a>.
+          <Typography>This web application is implemented in the React framework, making use of the Material UI component library and the Visx data visualization library. The source code is
+          available on <a href="https://github.com/gaelicmichael/facet-lab">this GitHub repository</a>.</Typography>
         </Box>
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
@@ -105,9 +107,7 @@ function TabbedPanels(props) {
         <DirectoryList colDefs={tableColumns} />
       </TabPanel>
       <TabPanel value={tabValue} index={3}>
-        <Box>
-          Visualization will go here.          
-        </Box>
+        <VisualizerPanel />
       </TabPanel>
     </Box>
   )

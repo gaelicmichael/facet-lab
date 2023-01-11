@@ -4,9 +4,12 @@
  */
 
 import React, { useContext } from 'react';
+
+import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
+
 import { Group } from '@visx/group';
 
 import { FacetContext } from '../data-modules/FacetedDBContext';
@@ -60,7 +63,7 @@ function FacetBrowser(props) {
 
                     return (
                     <Group top={0} left={leftPos} key={`flabel-${fIndex}`} className="group-selectable" >
-                        <rect height={barHeight} width={barWidth} y={0} x={0}
+                        <rect height={barHeight} width={barWidth} y={0} x={0} stroke="black" strokeWidth="0.5"
                               fill={facetLabelBGColor} onClick={() => { clickFacetValue(fIndex, -1) }} />
                         <text x={6} y={barHeight-6} fontSize={14} fill={'black'} fillOpacity={1} textAnchor="left">
                             { dbInterface.getFacetLabel(fIndex) }
@@ -72,7 +75,7 @@ function FacetBrowser(props) {
                                 <Group className="group-selectable" key={`fValue=${fVIndex}`}
                                     onClick={() => { clickFacetValue(fIndex, fVIndex) }}
                                 >
-                                    <rect height={barHeight} width={barWidth} y={top} x={0}
+                                    <rect height={barHeight} width={barWidth} y={top} x={0} stroke="black" strokeWidth="0.5"
                                         fill={(fVIndex === selectedVal) ? orange : blueLight} />
                                     <rect height={barHeight} width={(barWidth*fCount)/totalDBSize} y={top} x={0}
                                         fill={(fVIndex === selectedVal) ? yellow : blueDark} />
@@ -85,12 +88,14 @@ function FacetBrowser(props) {
                     </Group>
                     )
                 })}
-            </svg><style jsx="true">{`.group-selectable {cursor: pointer}`}</style>
+            </svg><style jsx="true">{`.group-selectable { cursor: pointer }`}</style>
             </Box>
             <ButtonGroup size="small" sx={{ margin: '4px' }}>
                 <Button variant="contained" onClick={clickReset}>Reset Filters</Button>
             </ButtonGroup>
-            <Box>{state.objects.length} items after filter applied.</Box>
+            <Box>
+                <Typography>{state.objects.length} items after filter applied.</Typography>
+            </Box>
         </Box>
     )
 } // FacetBrowser
