@@ -3,8 +3,9 @@
  *    Details about using context https://medium.com/simply/state-management-with-react-hooks-and-context-api-at-10-lines-of-code-baf6be8302c
  ***/
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
@@ -12,7 +13,7 @@ import Typography from '@mui/material/Typography';
 //===========================
 // Custom components and code
 
-import { FacetedDBProvider } from './data-modules/FacetedDBContext';
+import { FacetedDBProvider, initialFacetedDBContext } from './data-modules/FacetedDBContext';
 import FacetedDBInterface from './data-modules/FacetedDBInterface';
 import TabbedPanels from './components/TabbedPanels';
 
@@ -30,6 +31,16 @@ const facetDescriptors = {
   'place_of_origin': { label: 'Origin', multi: false, values: ["Nova Scotia", "Scotland"] },
   'original_format': { label: 'Media', multi: false, values:
     ["Manuscript", "Newspaper Clipping", "Publication", "Sound Recording"] }
+};
+
+const fieldDescriptors = {
+  title: { label: "Title" },
+  'first_line_chorus': { label: "Chorus 1st line" },
+  'first_line_verse': { label: "Verse 1st line" },
+  subjects: { label: "Subjects" },
+  'composer_first_name': { label: "Composer 1st Name" },
+  'composer_last_name':  { label: "Composer Last Name" },
+  community: { label: "Community" },
 };
 
 const topTitleStyle = {
@@ -52,33 +63,40 @@ const messageStyle = {
   marginBottom: "10px",
 }
 
+const theme = createTheme({
+});
+
 const apiCall = "https://dasg.ac.uk/LIL/ajax.php?action=browseRecords&search=&sort=&order=&offset=0&limit=7000&searchStrings=&searchFields=&booleans=&params=&getText=n&format=json";
 
 function App() {
-  const [facetedDB, setFacetedDB] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(getDataFromAPI, []);
+  const [initialState, setInitialState] = useState(initialFacetedDBContext);
 
   function getDataFromAPI() {
 console.log("Calling fetch");
     fetch(apiCall)
       .then((response) => response.json())
       .then(function(data) {
-        const dbInterface = new FacetedDBInterface(data.rows, facetDescriptors);
+        let newState = Object.assign({}, initialState);
+        const dbInterface = new FacetedDBInterface(data.rows, facetDescriptors, fieldDescriptors);
+        newState.dbInterface = dbInterface;
+        newState.facetNames = dbInterface.getFacetNames();
         const numFacets = dbInterface.getNumFacets();
-        const facetNames = dbInterface.getFacetNames();
+        newState.numFacets = numFacets;
         let filterValues = [];
         for (let i=0; i<numFacets; i++) { filterValues.push(-1); }
-        const objects = dbInterface.getRawData();
-        setFacetedDB({ dbInterface, numFacets, facetNames, filterValues, objects });
+        newState.filterValues = filterValues;
+        newState.objects = dbInterface.getRawData();
+        setInitialState(newState);
         setIsLoading(false);
       })
       .catch(function(error) { console.log('Data fetch request failed: ', error) });
   } // getDataFromAPI()
 
+  useEffect(getDataFromAPI, []);
+
   return (
-    <Fragment>
+    <ThemeProvider theme={theme}>
       <Box sx={topTitleStyle}>
         Language In Lyrics Explorer
       </Box>
@@ -89,11 +107,11 @@ console.log("Calling fetch");
         </Box>
       }
       { !isLoading &&
-        <FacetedDBProvider initialState={facetedDB}>
+        <FacetedDBProvider initialState={initialState}>
           <TabbedPanels />
         </FacetedDBProvider>
       }
-    </Fragment>
+    </ThemeProvider>
   );
 } // App
 

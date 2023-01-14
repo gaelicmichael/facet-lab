@@ -58,8 +58,8 @@ function a11yProps(index) {
 const tableColumns = [
   { field: 'title', headerName: 'Title', width: 350, headerClassName: 'data-table-theme' },
   { field: 'first_line_verse', headerName: 'First Line', width: 450, headerClassName: 'data-table-theme' },
-  { field: 'composer_first_name', headerName: 'Author', width: 120, headerClassName: 'data-table-theme' },
-  { field: 'composer_last_name', headerName: 'Surname', width: 120, headerClassName: 'data-table-theme' },
+  { field: 'composer_first_name', headerName: 'Author', width: 150, headerClassName: 'data-table-theme' },
+  { field: 'composer_last_name', headerName: 'Surname', width: 150, headerClassName: 'data-table-theme' },
 ];
 
 function TabbedPanels(props) {
@@ -82,22 +82,21 @@ function TabbedPanels(props) {
       <TabPanel value={tabValue} index={0}>
         <Box>
           <Typography>This is an experimental dashboard for the <a href="https://languageinlyrics.com"><i>Language In Lyrics</i></a> database that provides flexible filtering and
-          visualization capabilities. It allowa you to explore the information in complex and creative ways. I (Michael Newton) designed and implemented this dashboard,
-          inspired by my previous work on the Prospect Digital Humanities Collaboratory, which I created during my tenure as Technical Lead at the UNC Digital Innovation Lab.
-          Thanks to Stephen Barrett for adding needed functionality to the <i>LIL</i> API.</Typography>
-        </Box>
-        <Box>
+          visualization capabilities. It allowa you to explore the information in complex and creative ways.</Typography>
+          <Typography>I (Michael Newton) designed and implemented this dashboard,
+          inspired by my previous work on the <i>Prospect</i> Digital Humanities Collaboratory, which I created during my tenure as Technical Lead at the UNC Digital Innovation Lab.</Typography>
           <ul>
             <li>First, click on the <b>Filter</b> tab and click the combination of features of the data in which you are interested.
-            If you click a facet title (at the top of the column), it will deselect any selection you have made in that column.</li>
+            If you click a facet title (at the top of the column), it will deselect any selection you have made in that column. You can also filter by
+            a text field. Click the <b>Apply Filters</b> button at the bottom of the page to apply all filter conditions.</li>
             <li>If you click on the <b>Results</b> tab, you can scroll through all of the records that have passed the conditions of
-            the facet filters you have selected.</li>
-            <li>Click the <b>Visualize</b> tab to explore patterns in the resulting data using a Treemap visualization.</li>
+            the facet and text filters you have selected.</li>
+            <li>Click the <b>Visualize</b> tab to explore patterns in the resulting data using a Treemap visualization. If you hover over
+            a tile, a tooltip will appear to indicate what facet value combination it represents.</li>
           </ul>
-        </Box>
-        <Box>
           <Typography>This web application is implemented in the React framework, making use of the Material UI component library and the Visx data visualization library. The source code is
           available on <a href="https://github.com/gaelicmichael/facet-lab">this GitHub repository</a>.</Typography>
+          <Typography>Thanks to Stephen Barrett for adding needed functionality to the <i>LIL</i> API.</Typography>
         </Box>
       </TabPanel>
       <TabPanel value={tabValue} index={1}>

@@ -6,7 +6,11 @@
 import React, { useContext } from 'react';
 
 import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 
@@ -29,8 +33,14 @@ function FacetBrowser(props) {
     const barHGap = 5;
 
     const dbInterface = state.dbInterface;
+
+    if (dbInterface === null) {
+        return <></>;
+    }
+
     const totalDBSize = dbInterface.getRawDataSize();
     const numFacets = state.numFacets;
+    const fieldNames = dbInterface.getFieldNames();
 
     const totalWidth = (numFacets * barWidth) + ((numFacets-1) * barHGap);
     let maxFacetEntries = 0;
@@ -44,17 +54,42 @@ function FacetBrowser(props) {
     // Height is the size of the longest facet, inc facet title
     const totalHeight = ((maxFacetEntries + 1) * barHeight) + ((maxFacetEntries) * barVGap);
 
+    function selectFieldName(event) {
+        dispatch({ type: 'SET_FIELD_NAME', payload: { value: event.target.value }});
+    }
+
+    function setFieldValue(event) {
+        dispatch({ type: 'SET_FIELD_VALUE', payload: { value: event.target.value }});
+    }
+
+    // PURPOSE: Deselect all facet values
+    function clickApply() {
+        dispatch({ type: 'APPLY_FILTERS' });
+    } // clickReset()
+
     // PURPOSE: Deselect all facet values
     function clickReset() {
         dispatch({ type: 'RESET' });
     } // clickReset()
 
     function clickFacetValue(fIndex, fVIndex) {
-        dispatch({ type: 'SET_FILTER', payload: { fIndex, fVIndex } });
+        dispatch({ type: 'SET_FACET', payload: { fIndex, fVIndex } });
     } // clickFacetValue()
 
     return (
         <Box>
+            <Stack direction="row" justifyContent="left" alignItems="center" spacing={1} sx={{ marginBottom: '4px'}}>
+                <Select labelId={"select-field"} id={"select-field"} value={state.fieldName} onChange={selectFieldName}>
+                    <MenuItem value="none" key="none">-- None --</MenuItem>
+                    { fieldNames.map((f, fIndex) =>
+                        <MenuItem value={f} key={f}>
+                            { dbInterface.getFieldLabel(fIndex) }
+                        </MenuItem>) }
+                </Select>
+                <span> must contain </span>
+                <TextField id="field-value" label="Text"
+                    value={state.fieldValue} onChange={setFieldValue} />
+            </Stack>
             <Box>
             <svg width={totalWidth} height={totalHeight}>
                 { state.facetNames.map((fName, fIndex) => {
@@ -76,9 +111,11 @@ function FacetBrowser(props) {
                                     onClick={() => { clickFacetValue(fIndex, fVIndex) }}
                                 >
                                     <rect height={barHeight} width={barWidth} y={top} x={0} stroke="black" strokeWidth="0.5"
-                                        fill={(fVIndex === selectedVal) ? orange : blueLight} />
+                                        fill={(fVIndex === selectedVal) ? yellow : blueLight}>
+                                            <title>{fCount} items</title>
+                                    </rect>
                                     <rect height={barHeight} width={(barWidth*fCount)/totalDBSize} y={top} x={0}
-                                        fill={(fVIndex === selectedVal) ? yellow : blueDark} />
+                                        fill={(fVIndex === selectedVal) ? orange : blueDark} />
                                     <text x={6} y={top+barHeight-6} fontSize={14} fill={'black'} fillOpacity={1} textAnchor="left">
                                         {dbInterface.getFacetValueAtIndex(fIndex, fVIndex)}
                                     </text>
@@ -90,11 +127,12 @@ function FacetBrowser(props) {
                 })}
             </svg><style jsx="true">{`.group-selectable { cursor: pointer }`}</style>
             </Box>
-            <ButtonGroup size="small" sx={{ margin: '4px' }}>
+            <ButtonGroup size="small" sx={{ margin: '4px 0px' }}>
+                <Button variant="contained" onClick={clickApply} sx={{ marginRight: '4px' }}>Apply Filters</Button>
                 <Button variant="contained" onClick={clickReset}>Reset Filters</Button>
             </ButtonGroup>
             <Box>
-                <Typography>{state.objects.length} items after filter applied.</Typography>
+                <Typography>{ state.objects.length } items after filter applied.</Typography>
             </Box>
         </Box>
     )

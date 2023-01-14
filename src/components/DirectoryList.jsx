@@ -26,11 +26,7 @@ const dataTableTheme = {
     },
 }
 
-function DirectoryList(props) {
-  const {
-    colDefs,
-  } = props;
-
+function DirectoryList({ colDefs }) {
   const [state] = useContext(FacetContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedIDs, setSelectedIDs] = useState(null);

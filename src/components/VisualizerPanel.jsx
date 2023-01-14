@@ -1,10 +1,6 @@
 
 import React, { useContext, useState } from 'react';
 
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 
@@ -14,38 +10,19 @@ import { Treemap, hierarchy, stratify, treemapSquarify } from '@visx/hierarchy';
 import { intersection } from 'underscore';
 
 import { FacetContext } from '../data-modules/FacetedDBContext';
+import SelectFromList from './SelectFromList';
 
 const background = '#114b5f';
 
 const colorPalette16 = [
-    "#f44336", "#2196f3", "#8bc34a", "#e81e63", "#9c27b0",
-    "#673ab7", "#3f51b5", "#03a9f4","#009688", "#4caf50",
-    "#cddc39", "#ffeb3b", "#ffc107", "#ff9800",
-    "#ff5722", "#00bcd4",
+    "#f44336", "#2196f3", "#8bc34a", "#e81e63",
+    "#673ab7", "#03a9f4", "#4caf50", "#9c27b0",
+    "#ffeb3b", "#ffc107", "#ff9800", "#009688",
+    "#ff5722", "#00bcd4", "#3f51b5", "#cddc39",
 ];
 
-const width = 800;
+const width = 900;
 const height = 600;
-
-function SelectFromList({ name, label, values, valueSetter, defIndex }) {
-  const [value, setValue] = React.useState(defIndex);
-  
-  function selectValue(event) {
-    setValue(event.target.value);
-    valueSetter(event.target.value);
-  }
-
-  return (
-    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-      <InputLabel id={"select-facet-"+name}>{label}</InputLabel>
-      <Select labelId={"select-facet-"+name} id={"select-facet-"+name}
-        value={value} label={label} onChange={selectValue}
-      >
-        { values.map((v, vIndex) => <MenuItem value={vIndex} key={`${name}-${vIndex}`}>{v}</MenuItem>) }
-      </Select>
-    </FormControl>
-  )
-} // SelectFromList()
 
 function VisualizerPanel() {
     const [state] = useContext(FacetContext);
@@ -55,7 +32,6 @@ function VisualizerPanel() {
     const [facet1, setFacet1] = useState(0);
     const [facet2, setFacet2] = useState(1);
     const [root, setRoot] = useState(null);
-    // const [colorScale, setColorScale] = useState(null);
 
     function createViz() {
         console.log(`starting createViz with ${facet1}, ${facet2}`);
@@ -92,7 +68,7 @@ function VisualizerPanel() {
             <SelectFromList name="att1" label="Attribute 1" values={facetLabels} valueSetter={setFacet1} defIndex={0} />
             <SelectFromList name="att2" label="Attribute 2" values={facetLabels} valueSetter={setFacet2} defIndex={1} />
             <Button size="small" variant="contained" onClick={createViz} sx={{ padding: '6px' }}>
-                  Create Visualization
+                  Create Treemap
             </Button>
         </Stack>
         { (root !== null) &&

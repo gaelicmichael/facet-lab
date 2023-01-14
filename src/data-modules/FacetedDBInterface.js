@@ -17,12 +17,19 @@
 import { intersection } from 'underscore';
 
 class FacetedDBInterface {
-  // facetInfo is an object of { facetName: { values: [String: facetNames], multi: Boolean }
-  constructor(rawData, facetInfo) {
+
+  // facetInfo is an object of { facetName: { label: String, values: [String facetNames], multi: Boolean }
+  // fieldInfo is an object of { fieldName: { label: String } }
+  constructor(rawData, facetInfo, fieldInfo) {
     this.raw = rawData;
     this.facetInfo = facetInfo;
     let facetNames = Object.keys(facetInfo);
     this.facetNames = facetNames;
+
+    this.fieldInfo = fieldInfo;
+    let fieldNames = Object.keys(fieldInfo);
+    this.fieldNames = fieldNames;
+    this.fieldFilter = null;    // { fieldName: String, fieldValue: String }
 
     // Create arrays to store indices of objects with each facet value
     let facetIndices = [];
@@ -82,6 +89,27 @@ class FacetedDBInterface {
     this.objectFacets = objectFacets;
     this.filtered = null;
   } // constructor
+
+  getNumFields() {
+    return this.fieldNames.length;
+  }
+
+  getFieldNames() {
+    return this.fieldNames;
+  }
+
+  getFieldName(fIndex) {
+    return this.fieldNames[fIndex];
+  }
+
+  getFieldLabels() {
+    return this.fieldNames.map(fName => this.fieldInfo[fName].label);
+  }
+
+  getFieldLabel(fIndex) {
+    const thisFieldName = this.fieldNames[fIndex];
+    return this.fieldInfo[thisFieldName].label;
+  }
 
   getNumFacets() {
     return this.facetNames.length;
@@ -167,6 +195,10 @@ class FacetedDBInterface {
     this.filtered = null; // de-cache resulting array
   }
 
+  setFieldFilter(fieldName, fieldValue) {
+    this.fieldFilter = { fieldName, fieldValue };
+  } // setFieldFilter()
+
   // RETURN: The array of values (indices) for facet fIndex of object oIndex (post-filtered value)
   getObjectFacetValues(oIndex, fIndex) {
     let useIndex = this.filteredIndices ? this.filteredIndices[oIndex] : oIndex;
@@ -199,6 +231,8 @@ class FacetedDBInterface {
   } // findObjectByField()
 
   resetFilters() {
+    this.fieldFilter = null;
+
     let newFilters = [];
     for (let i=0; i<this.facetNames.length; i++) {
       newFilters.push(-1);
@@ -210,7 +244,8 @@ class FacetedDBInterface {
 
   // RETURNS: The array of objects that results from applying filter values
   applyFilters() {
-    let hasFilters = false;
+    const filter = this.fieldFilter;
+    let hasFilters = (filter !== null && filter.fieldName !== 'none' && filter.fieldValue !== '');
     for (let fIndex=0; fIndex<this.filterValues.length; fIndex++) {
       if (this.filterValues[fIndex] !== -1) {
         hasFilters = true;
@@ -241,6 +276,27 @@ class FacetedDBInterface {
         }
       }
     } // for
+
+    // Apply any text field filter
+    if (filter !== null && filter.fieldName !== 'none' && filter.fieldValue !== '') {
+      const indices2 = [];
+      if (indices) {
+        const self = this;
+        indices.forEach(function(i) {
+          const thisObj = self.raw[i];
+          if (thisObj[filter.fieldName].includes(filter.fieldValue)) {
+            indices2.push(i);
+          }
+        });
+      } else {
+        this.raw.forEach(function(thisObj, thisIndex) {
+          if (thisObj[filter.fieldName].includes(filter.fieldValue)) {
+            indices2.push(thisIndex);
+          }
+        })
+      }
+      indices = indices2;
+    }
 
     this.filteredIndices = indices;
     // Now return copy of filtered objects

@@ -11,6 +11,8 @@ export const initialFacetedDBContext = {
   facetNames: [],
   filterValues: [],
   objects: [],
+  fieldName: 'none',
+  fieldValue: '',
 }
 
 const reducer = (state, action) => {
@@ -18,7 +20,7 @@ const reducer = (state, action) => {
   let newFilterValues;
 
   switch(action.type) {
-  case 'SET_FILTER':
+  case 'SET_FACET':
     const { fIndex, fVIndex } = action.payload;
     newFilterValues = state.filterValues.slice();
     // To toggle value
@@ -29,14 +31,27 @@ const reducer = (state, action) => {
       newFilterValues[fIndex] = fVIndex;
       dbInterface.setFacetFilterValue(fIndex, fVIndex);
     }
+    return { ...state, filterValues: newFilterValues };
+
+  case 'SET_FIELD_NAME':
+    const fieldName = action.payload.value;
+    dbInterface.setFieldFilter(fieldName, state.fieldValue);
+    return { ...state, fieldName };
+
+  case 'SET_FIELD_VALUE':
+    const fieldValue = action.payload.value;
+    dbInterface.setFieldFilter(state.fieldName, fieldValue);
+    return { ...state, fieldValue };
+  
+  case 'APPLY_FILTERS':
     const newObjects = dbInterface.applyFilters();
-    return { ...state, filterValues: newFilterValues, objects: newObjects };
+    return { ...state, objects: newObjects };
 
   case 'RESET':
     newFilterValues = [];
     for (let i=0; i<state.numFacets; i++) { newFilterValues.push(-1); }
     const originalObjs = dbInterface.resetFilters();
-    return { ...state, filterValues: newFilterValues, objects: originalObjs };
+    return { ...state, filterValues: newFilterValues, objects: originalObjs, fieldName: 'none', fieldValue: '' };
 
   default:
     throw new Error();
