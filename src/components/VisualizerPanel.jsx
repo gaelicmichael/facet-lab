@@ -1,6 +1,7 @@
 
 import React, { useContext, useState } from 'react';
 
+import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 
@@ -64,6 +65,7 @@ function VisualizerPanel() {
 
     return (
       <>
+        <Typography>Exploring items filtered by {state.filterDesc}</Typography>
         <Stack direction="row" justifyContent="left" alignItems="center">
             <SelectFromList name="att1" label="Attribute 1" values={facetLabels} valueSetter={setFacet1} defIndex={0} />
             <SelectFromList name="att2" label="Attribute 2" values={facetLabels} valueSetter={setFacet2} defIndex={1} />

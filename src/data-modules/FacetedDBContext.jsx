@@ -5,6 +5,8 @@ import React, { useReducer, createContext } from "react";
 
 export const FacetContext = createContext();
 
+const noFilterDesc = '(All data, no filters applied)';
+
 export const initialFacetedDBContext = {
   dbInterface: null,
   numFacets: 0,
@@ -13,6 +15,7 @@ export const initialFacetedDBContext = {
   objects: [],
   fieldName: 'none',
   fieldValue: '',
+  filterDesc: noFilterDesc,
 }
 
 const reducer = (state, action) => {
@@ -45,13 +48,34 @@ const reducer = (state, action) => {
   
   case 'APPLY_FILTERS':
     const newObjects = dbInterface.applyFilters();
-    return { ...state, objects: newObjects };
+    // Create the string that describes the current filters
+    let newDesc = '';
+    state.filterValues.forEach(function(fV, fVIndex) {
+      if (fV !== -1) {
+        if (newDesc.length > 0) {
+          newDesc += ', ';
+        }
+        newDesc += dbInterface.getFacetLabel(fVIndex) + ' = ' + dbInterface.getFacetValueAtIndex(fVIndex, fV);
+      }
+    });
+    if (state.fieldName !== 'none' && state.fieldValue !== '') {
+      if (newDesc.length > 0) {
+        newDesc += ', ';
+      }
+      newDesc += dbInterface.getFieldLabelFromName(state.fieldName) + ' = ' + state.fieldValue;
+    }
+    if (newDesc === '') {
+      newDesc = noFilterDesc;
+    }
+    return { ...state, objects: newObjects, filterDesc: newDesc };
 
   case 'RESET':
     newFilterValues = [];
     for (let i=0; i<state.numFacets; i++) { newFilterValues.push(-1); }
     const originalObjs = dbInterface.resetFilters();
-    return { ...state, filterValues: newFilterValues, objects: originalObjs, fieldName: 'none', fieldValue: '' };
+    return { ...state, filterValues: newFilterValues, objects: originalObjs,
+      fieldName: 'none', fieldValue: '', filterDesc: '(All data, no filters applied)',
+    };
 
   default:
     throw new Error();

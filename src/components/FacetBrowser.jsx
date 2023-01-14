@@ -8,6 +8,8 @@ import React, { useContext } from 'react';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
@@ -79,15 +81,18 @@ function FacetBrowser(props) {
     return (
         <Box>
             <Stack direction="row" justifyContent="left" alignItems="center" spacing={1} sx={{ marginBottom: '4px'}}>
-                <Select labelId={"select-field"} id={"select-field"} value={state.fieldName} onChange={selectFieldName}>
-                    <MenuItem value="none" key="none">-- None --</MenuItem>
-                    { fieldNames.map((f, fIndex) =>
-                        <MenuItem value={f} key={f}>
-                            { dbInterface.getFieldLabel(fIndex) }
-                        </MenuItem>) }
-                </Select>
+                <FormControl size="small">
+                    <InputLabel id="select-field">Field</InputLabel>
+                    <Select labelId="select-field" id="select-field" value={state.fieldName} onChange={selectFieldName}>
+                        <MenuItem value="none" key="none">-- None --</MenuItem>
+                        { fieldNames.map((f, fIndex) =>
+                            <MenuItem value={f} key={f}>
+                                { dbInterface.getFieldLabel(fIndex) }
+                            </MenuItem>) }
+                    </Select>
+                </FormControl>
                 <span> must contain </span>
-                <TextField id="field-value" label="Text"
+                <TextField id="field-value" label="Text" size="small"
                     value={state.fieldValue} onChange={setFieldValue} />
             </Stack>
             <Box>

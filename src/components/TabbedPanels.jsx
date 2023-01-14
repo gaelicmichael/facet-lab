@@ -86,9 +86,11 @@ function TabbedPanels(props) {
           <Typography>I (Michael Newton) designed and implemented this dashboard,
           inspired by my previous work on the <i>Prospect</i> Digital Humanities Collaboratory, which I created during my tenure as Technical Lead at the UNC Digital Innovation Lab.</Typography>
           <ul>
-            <li>First, click on the <b>Filter</b> tab and click the combination of features of the data in which you are interested.
-            If you click a facet title (at the top of the column), it will deselect any selection you have made in that column. You can also filter by
-            a text field. Click the <b>Apply Filters</b> button at the bottom of the page to apply all filter conditions.</li>
+            <li>First, click on the <b>Filter</b> tab. Select the combination of features of the data in which you are interested.
+            You can choose one of the text fields of the data and a word or phrase that must occur in it. You can also specify the value of
+            one of the “facets” of the data that must match. 
+            If you click a facet title (at the top of the column), it will deselect any selection you have made in that column.
+            Click the <b>Apply Filters</b> button at the bottom of the page to apply all filter conditions.</li>
             <li>If you click on the <b>Results</b> tab, you can scroll through all of the records that have passed the conditions of
             the facet and text filters you have selected.</li>
             <li>Click the <b>Visualize</b> tab to explore patterns in the resulting data using a Treemap visualization. If you hover over

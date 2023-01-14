@@ -111,6 +111,10 @@ class FacetedDBInterface {
     return this.fieldInfo[thisFieldName].label;
   }
 
+  getFieldLabelFromName(fieldName) {
+    return this.fieldInfo[fieldName].label;
+  }
+
   getNumFacets() {
     return this.facetNames.length;
   }
@@ -280,17 +284,20 @@ class FacetedDBInterface {
     // Apply any text field filter
     if (filter !== null && filter.fieldName !== 'none' && filter.fieldValue !== '') {
       const indices2 = [];
+      const lcValue = filter.fieldValue.toLowerCase();
       if (indices) {
         const self = this;
         indices.forEach(function(i) {
           const thisObj = self.raw[i];
-          if (thisObj[filter.fieldName].includes(filter.fieldValue)) {
+          const objText = thisObj[filter.fieldName].toLowerCase();
+          if (objText.includes(lcValue)) {
             indices2.push(i);
           }
         });
       } else {
         this.raw.forEach(function(thisObj, thisIndex) {
-          if (thisObj[filter.fieldName].includes(filter.fieldValue)) {
+          const objText = thisObj[filter.fieldName].toLowerCase();
+          if (objText.includes(lcValue)) {
             indices2.push(thisIndex);
           }
         })
