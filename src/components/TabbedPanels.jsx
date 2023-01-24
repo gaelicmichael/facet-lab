@@ -76,15 +76,16 @@ function TabbedPanels(props) {
           <Tab label="About" {...a11yProps(0)} />
           <Tab label="Filter" {...a11yProps(1)} />
           <Tab label="Results" {...a11yProps(2)} />
-          <Tab label="Visualize" {...a11yProps(3)} />
+          <Tab label="Visualise" {...a11yProps(3)} />
         </Tabs>
       </Box>
       <TabPanel value={tabValue} index={0}>
         <Box>
           <Typography>This is an experimental dashboard for the <a href="https://languageinlyrics.com"><i>Language In Lyrics</i></a> database that provides flexible filtering and
-          visualization capabilities. It allows you to explore the information in complex and creative ways.</Typography>
+          visualisation capabilities. It allows you to explore the information in complex and creative ways.</Typography>
           <Typography>I (Michael Newton) designed and implemented this dashboard,
-          inspired by my previous work on the <i><a href="https://digitalinnovation.web.unc.edu/tools-2/propsect/">Prospect</a></i> Digital Humanities Collaboratory, which I created during my tenure as Technical Lead at the UNC Digital Innovation Lab.</Typography>
+          inspired by my previous work on the <i><a href="https://digitalinnovation.web.unc.edu/tools-2/propsect/">Prospect</a></i> Digital Humanities Collaboratory,
+          which I created during my tenure as Technical Lead at the UNC Digital Innovation Lab.</Typography>
           <ul>
             <li>First, click on the <b>Filter</b> tab. Select the combination of features of the data in which you are interested.
             You can choose one of the text fields of the data and a word or phrase that must occur in it. You can also specify the value of
@@ -93,7 +94,7 @@ function TabbedPanels(props) {
             Click the <b>Apply Filters</b> button at the bottom of the page to apply all filter conditions.</li>
             <li>If you click on the <b>Results</b> tab, you can scroll through all of the records that have passed the conditions of
             the facet and text filters you have selected.</li>
-            <li>Click the <b>Visualize</b> tab to explore patterns in the resulting data using a Treemap visualization. If you hover over
+            <li>Click the <b>Visualise</b> tab to explore patterns in the resulting data using a Treemap visualisation. If you hover over
             a tile, a tooltip will appear to indicate what facet value combination it represents.</li>
           </ul>
           <Typography>This web application is implemented in the React framework, making use of the Material UI component library and the Visx data visualization library. The source code is

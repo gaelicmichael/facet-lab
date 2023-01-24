@@ -63,7 +63,7 @@ const facetDescriptors = {
     ["Manuscript", "Newspaper Clipping", "Publication", "Sound Recording"] },
   'structure': { label: 'Metre', multi: false, values: verseMetres },
   classifications: { label: 'Classifications', multi: true, values: 
-  ["Ballad", "Bawdy", "Clapping", "Complaint", "Dialogue", "Drinking", "Elegy", "Exile",
+  ["Ballad", "Clapping", "Complaint", "Dialogue", "Drinking", "Elegy", "Exile",
   "Flyting", "Historical", "Homeland", "Humorous", "Instructive", "Lament", "Local events and characters",
   "Love", "Lullaby", "Macaronic", "Milling", "Nature", "Pibroch", "Political", "Port-a-beul", "Praise",
   "Rann / Duan", "Religious", "Sailing", "Satire", "Spiritual", "Supernatural", "Work"
@@ -110,12 +110,13 @@ function App() {
   const [initialState, setInitialState] = useState(initialFacetedDBContext);
 
   function getDataFromAPI() {
-console.log("Calling fetch");
+    console.log("Calling fetch");
     fetch(apiCall)
       .then((response) => response.json())
       .then(function(data) {
         let newState = Object.assign({}, initialState);
         const dbInterface = new FacetedDBInterface(data.rows, facetDescriptors, fieldDescriptors);
+        console.log('Data processed');
         newState.dbInterface = dbInterface;
         newState.facetNames = dbInterface.getFacetNames();
         const numFacets = dbInterface.getNumFacets();
@@ -140,7 +141,7 @@ console.log("Calling fetch");
       { isLoading &&
         <Box sx={centerLoadingStyle}>
           <Typography sx={messageStyle}>Loading and Processing Song Meta-Data</Typography>
-          <Typography>(This could take a while)</Typography>
+          <Typography>(This may take a while: <i>gabhaibh air ur socair</i>)</Typography>
           <CircularProgress />
         </Box>
       }

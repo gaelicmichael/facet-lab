@@ -35,7 +35,6 @@ function VisualizerPanel() {
     const [root, setRoot] = useState(null);
 
     function createViz() {
-        console.log(`starting createViz with ${facet1}, ${facet2}`);
         let newData = [{ id: "-1", label: '', parent: null, size: 0, a2: -1 }];
         const f1Values = dbInterface.getFacetValues(facet1);
         const f2Values = dbInterface.getFacetValues(facet2);
@@ -65,7 +64,7 @@ function VisualizerPanel() {
 
     return (
       <>
-        <Typography>Exploring items filtered by {state.filterDesc}</Typography>
+        <Typography>Visualising items filtered by {state.filterDesc}</Typography>
         <Stack direction="row" justifyContent="left" alignItems="center">
             <SelectFromList name="att1" label="Attribute 1" values={facetLabels} valueSetter={setFacet1} defIndex={0} />
             <SelectFromList name="att2" label="Attribute 2" values={facetLabels} valueSetter={setFacet2} defIndex={1} />
