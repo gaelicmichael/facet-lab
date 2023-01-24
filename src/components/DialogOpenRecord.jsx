@@ -35,17 +35,20 @@ export default function DialogOpenRecord(props) {
     return theRecord ? theRecord[fieldName] : "";
   }
 
-  let title = getField('title');
-  let chorus = getField('first_line_chorus');
-  let line1 = getField('first_line_verse');
-  let classifications = getField('classifications');
-  let subjects = getField('subjects');
-  let origin = getField('place_of_origin');
-  let community = getField('community');
-  let authorFirst = getField('composer_first_name');
-  let authorLast = getField('composer_last_name');
-  let originalFormat = getField('original_format');
-  let online = getField('online_access');
+  const title = getField('title');
+  const chorus = getField('first_line_chorus');
+  const line1 = getField('first_line_verse');
+  const structure = getField('structure');
+  const classifications = getField('classifications');
+  const subjects = getField('subjects');
+  const origin = getField('place_of_origin');
+  const community = getField('community');
+  const authorFirst = getField('composer_first_name');
+  const authorLast = getField('composer_last_name');
+  const originalFormat = getField('original_format');
+  const composedEra = getField('era_of_poetry');
+  const online = getField('online_access');
+  const notes = getField('notes_1');
 
   return (
     <Dialog open={open} onClose={handleClose}
@@ -64,8 +67,13 @@ export default function DialogOpenRecord(props) {
             <>
                 <b>First Line:</b> {line1}<br/>
             </> }
+            <b>Structure:</b> {structure}<br/>
             <b>Classifications:</b> {classifications}<br/>
             <b>Subjects:</b> {subjects}<br/>
+            { (composedEra !== "") &&
+            <>
+                <b>Composed:</b> {composedEra}<br/>
+            </> }
             <b>Origin:</b> {community ? community + ", " : ""} {origin}<br/>
             { (authorFirst !== "" || authorLast !== "") &&
             <>
@@ -74,7 +82,11 @@ export default function DialogOpenRecord(props) {
             <b>Original Format:</b> {originalFormat}<br/>
             { (online !== "") &&
             <>
-                <b>Online At:</b> <a href="{online}">{online}</a>
+                <b>Online At:</b> <a href="{online}">{online}</a><br/>
+            </> }
+            { (notes !== "") &&
+            <>
+                <b>Notes:</b> {notes}<br/>
             </> }
           </DialogContentText>
         </DialogContent>

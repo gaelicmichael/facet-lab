@@ -19,18 +19,55 @@ import TabbedPanels from './components/TabbedPanels';
 
 //===============================
 // App Visualization Data
-<option value="Work">Work</option>
+const verseMetres = [
+"One line verse",
+"One line verse / Three line chorus",
+"One line verse / Split chorus",
+"Two line verse",
+"Two line verse / Two line chorus",
+"Two line verse / Three line chorus",
+"Two line verse / Four line chorus",
+"Two line verse / Woven",
+"Three line verse",
+"Three line verse / Two line chorus",
+"Three line verse / Three line chorus",
+"Three line verse / Four line chorus",
+"Three line verse / Woven",
+"Four line verse",
+"Four line verse / Two line chorus",
+"Four line verse / Three line chorus",
+"Four line verse / Four line chorus",
+"Four line verse / Five line chorus",
+"Five line verse",
+"Six line verse",
+"Six line verse / Two line chorus",
+"Six line verse / Three line chorus",
+"Six line verse / Four line chorus",
+"Seven line verse",
+"Eight line verse",
+"Eight line verse / Four line chorus",
+"Eight line verse / Eight line chorus",
+"Nine line verse",
+"Ten line verse",
+"Twelve line verse",
+"Sixteen line verse",
+"Woven",
+"Split chorus",
+"Woven / Split chorus",
+];
 
 const facetDescriptors = {
-  classifications: { label: 'Classifications', multi: true, values: 
-    ["Ballad", "Bawdy", "Clapping", "Complaint", "Dialogue", "Drinking", "Elegy", "Exile",
-    "Flyting", "Historical", "Homeland", "Humorous", "Instructive", "Lament", "Local events and characters",
-    "Love", "Lullaby", "Macaronic", "Milling", "Nature", "Pibroch", "Political", "Port-a-beul", "Praise",
-    "Rann / Duan", "Religious", "Sailing", "Satire", "Spiritual", "Supernatural", "Work"
-    ] },
   'place_of_origin': { label: 'Origin', multi: false, values: ["Nova Scotia", "Scotland"] },
+  'composer_gender': { label: 'Composer Gender', multi: false, values: ["Male", "Female"] },
   'original_format': { label: 'Media', multi: false, values:
-    ["Manuscript", "Newspaper Clipping", "Publication", "Sound Recording"] }
+    ["Manuscript", "Newspaper Clipping", "Publication", "Sound Recording"] },
+  'structure': { label: 'Metre', multi: false, values: verseMetres },
+  classifications: { label: 'Classifications', multi: true, values: 
+  ["Ballad", "Bawdy", "Clapping", "Complaint", "Dialogue", "Drinking", "Elegy", "Exile",
+  "Flyting", "Historical", "Homeland", "Humorous", "Instructive", "Lament", "Local events and characters",
+  "Love", "Lullaby", "Macaronic", "Milling", "Nature", "Pibroch", "Political", "Port-a-beul", "Praise",
+  "Rann / Duan", "Religious", "Sailing", "Satire", "Spiritual", "Supernatural", "Work"
+  ] },
 };
 
 const fieldDescriptors = {
@@ -103,6 +140,7 @@ console.log("Calling fetch");
       { isLoading &&
         <Box sx={centerLoadingStyle}>
           <Typography sx={messageStyle}>Loading and Processing Song Meta-Data</Typography>
+          <Typography>(This could take a while)</Typography>
           <CircularProgress />
         </Box>
       }

@@ -82,9 +82,9 @@ function TabbedPanels(props) {
       <TabPanel value={tabValue} index={0}>
         <Box>
           <Typography>This is an experimental dashboard for the <a href="https://languageinlyrics.com"><i>Language In Lyrics</i></a> database that provides flexible filtering and
-          visualization capabilities. It allowa you to explore the information in complex and creative ways.</Typography>
+          visualization capabilities. It allows you to explore the information in complex and creative ways.</Typography>
           <Typography>I (Michael Newton) designed and implemented this dashboard,
-          inspired by my previous work on the <i>Prospect</i> Digital Humanities Collaboratory, which I created during my tenure as Technical Lead at the UNC Digital Innovation Lab.</Typography>
+          inspired by my previous work on the <i><a href="https://digitalinnovation.web.unc.edu/tools-2/propsect/">Prospect</a></i> Digital Humanities Collaboratory, which I created during my tenure as Technical Lead at the UNC Digital Innovation Lab.</Typography>
           <ul>
             <li>First, click on the <b>Filter</b> tab. Select the combination of features of the data in which you are interested.
             You can choose one of the text fields of the data and a word or phrase that must occur in it. You can also specify the value of

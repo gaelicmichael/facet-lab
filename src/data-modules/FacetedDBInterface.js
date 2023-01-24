@@ -46,18 +46,26 @@ class FacetedDBInterface {
     this.filterValues = filterValues;
     this.filteredIndices = null;
 
+    // Create cache of lowercase versions of values accessed via facet name
+    let lowerCaseCache = {};
+    facetNames.forEach(function(facetName) {
+      const thisFacet = facetInfo[facetName];
+      const facetValueList = thisFacet.values.map(f => f.toLowerCase());
+      lowerCaseCache[facetName] = facetValueList;
+    });
+
     // Loop through each data object; compute indices for facet values in objects
     const objectFacets = rawData.map(function(thisObj, oIndex) {
       let objFacets = [];
       facetNames.forEach(function(facetName, fIndex) {
         const thisFacet = facetInfo[facetName];
-        const facetValueList = thisFacet.values;
+        const facetValueList = lowerCaseCache[facetName];
         const fArray = facetIndices[fIndex];
         // Check if the object does not have entry for this facet
         if (thisObj[facetName]) {
           // Can the facet have multiple values?
           if (thisFacet.multi) {
-              const strValues = thisObj[facetName].split(',').map(item => item.trim());
+              const strValues = thisObj[facetName].split(',').map(item => item.trim().toLowerCase());
               let indices = [];
               strValues.forEach(function(value) {
                 const vIndex = facetValueList.indexOf(value);
@@ -70,7 +78,7 @@ class FacetedDBInterface {
               indices.sort((a,b) => a - b);
               objFacets.push(indices);
           } else {
-            const value = thisObj[facetName].trim();
+            const value = thisObj[facetName].trim().toLowerCase();
             const vIndex = facetValueList.indexOf(value);
             if (vIndex !== -1) {
               const vArray = fArray[vIndex];
@@ -241,6 +249,7 @@ class FacetedDBInterface {
     for (let i=0; i<this.facetNames.length; i++) {
       newFilters.push(-1);
     }
+    this.filterValues = newFilters;
     this.filteredIndices = null;
     this.filtered = null;
     return this.raw;

@@ -44,7 +44,7 @@ function FacetBrowser(props) {
     const numFacets = state.numFacets;
     const fieldNames = dbInterface.getFieldNames();
 
-    const totalWidth = (numFacets * barWidth) + ((numFacets-1) * barHGap);
+    const totalWidth = (numFacets * barWidth) + ((numFacets-1) * barHGap) + 20;
     let maxFacetEntries = 0;
     for (let fIndex=0; fIndex < numFacets; fIndex++) {
         const numLabels = dbInterface.getNumFacetValues(fIndex);
@@ -120,8 +120,11 @@ function FacetBrowser(props) {
                                             <title>{fCount} items</title>
                                     </rect>
                                     <rect height={barHeight} width={(barWidth*fCount)/totalDBSize} y={top} x={0}
-                                        fill={(fVIndex === selectedVal) ? orange : blueDark} />
+                                        fill={(fVIndex === selectedVal) ? orange : blueDark}>
+                                            <title>{fCount} items</title>
+                                    </rect>
                                     <text x={6} y={top+barHeight-6} fontSize={14} fill={'black'} fillOpacity={1} textAnchor="left">
+                                        <title>{fCount} items</title>
                                         {dbInterface.getFacetValueAtIndex(fIndex, fVIndex)}
                                     </text>
                                 </Group>
