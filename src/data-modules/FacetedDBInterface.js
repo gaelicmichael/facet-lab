@@ -18,11 +18,21 @@ import { intersection } from 'underscore';
 
 class FacetedDBInterface {
 
-  // facetInfo is an object of { facetName: { label: String, values: [String facetNames], multi: Boolean }
+  // facetInfo is an array of
+  //     facetName: {
+  //        label: String, 
+  //        values: [String facetNames],
+  //        multi: Boolean,
+  //        none: String*
+  //     }
+  //
   // fieldInfo is an object of { fieldName: { label: String } }
   constructor(rawData, facetInfo, fieldInfo) {
+    const self = this;
     this.raw = rawData;
-    this.facetInfo = facetInfo;
+
+    // Make deep copy
+    this.facetInfo = JSON.parse(JSON.stringify(facetInfo));
     let facetNames = Object.keys(facetInfo);
     this.facetNames = facetNames;
 
@@ -36,10 +46,15 @@ class FacetedDBInterface {
     let filterValues = [];
     facetNames.forEach(function(fName) {
       filterValues.push(-1); // no initial filter values
-      const thisFacet = facetInfo[fName];
-      const facetValueCount = thisFacet.values.length;
+      const thisFacet = self.facetInfo[fName];
+      let facetValueCount = thisFacet.values.length;
+      if (thisFacet.none) {
+        facetValueCount++;
+      }
       let facetValueArray = [];
-      for (let i=0; i<facetValueCount; i++) { facetValueArray.push([]); }
+      for (let i=0; i<facetValueCount; i++) {
+        facetValueArray.push([]);
+      }
       facetIndices.push(facetValueArray);
     });
     this.facetIndices = facetIndices;
@@ -49,7 +64,7 @@ class FacetedDBInterface {
     // Create cache of lowercase versions of values accessed via facet name
     let lowerCaseCache = {};
     facetNames.forEach(function(facetName) {
-      const thisFacet = facetInfo[facetName];
+      const thisFacet = self.facetInfo[facetName];
       const facetValueList = thisFacet.values.map(f => f.toLowerCase());
       lowerCaseCache[facetName] = facetValueList;
     });
@@ -58,7 +73,7 @@ class FacetedDBInterface {
     const objectFacets = rawData.map(function(thisObj, oIndex) {
       let objFacets = [];
       facetNames.forEach(function(facetName, fIndex) {
-        const thisFacet = facetInfo[facetName];
+        const thisFacet = self.facetInfo[facetName];
         const facetValueList = lowerCaseCache[facetName];
         const fArray = facetIndices[fIndex];
         // Check if the object does not have entry for this facet
@@ -75,7 +90,17 @@ class FacetedDBInterface {
                   indices.push(vIndex);
                 }
               }); // forEach strValue
-              indices.sort((a,b) => a - b);
+              if (indices.length > 0) {
+                indices.sort((a,b) => a - b);
+              } else {
+                // If no value and we’ll be creating a "none" value, push it
+                if (thisFacet.none) {
+                  const noneIndex = facetValueList.length;
+                  const vArray = fArray[noneIndex];
+                  vArray.push(oIndex);
+                  indices.push(noneIndex);
+                }
+              }
               objFacets.push(indices);
           } else {
             const value = thisObj[facetName].trim().toLowerCase();
@@ -85,17 +110,41 @@ class FacetedDBInterface {
               vArray.push(oIndex);
               objFacets.push([vIndex]);
             } else {
-              objFacets.push([]);
+              // Do we push special "none" value?
+              if (thisFacet.none) {
+                const noneIndex = facetValueList.length;
+                const vArray = fArray[noneIndex];
+                vArray.push(oIndex);
+                objFacets.push([noneIndex]);
+              } else {
+                objFacets.push([]);
+              }
             }
           }
         } else {
-          objFacets.push([]);
+          // Object does not have a value for this facet -- do we push special "none" value?
+          if (thisFacet.none) {
+            const noneIndex = facetValueList.length;
+            const vArray = fArray[noneIndex];
+            vArray.push(oIndex);
+            objFacets.push([facetValueList.length]);
+          } else {
+            objFacets.push([]);
+          }
         }
       }); // forEach facet
       return objFacets;
     }); // for objects
     this.objectFacets = objectFacets;
     this.filtered = null;
+
+    // Go through facets and add "none" value to Facet values if it is defined
+    facetNames.forEach(function(facetName) {
+      const thisFacet = self.facetInfo[facetName];
+      if (thisFacet.none) {
+        thisFacet.values.push(thisFacet.none);
+      }
+    });
   } // constructor
 
   getNumFields() {

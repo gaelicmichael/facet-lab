@@ -57,17 +57,38 @@ const verseMetres = [
 ];
 
 const facetDescriptors = {
-  'place_of_origin': { label: 'Origin', multi: false, values: ["Nova Scotia", "Scotland"] },
-  'composer_gender': { label: 'Composer Gender', multi: false, values: ["Male", "Female"] },
-  'original_format': { label: 'Media', multi: false, values:
-    ["Manuscript", "Newspaper Clipping", "Publication", "Sound Recording"] },
-  'structure': { label: 'Metre', multi: false, values: verseMetres },
-  classifications: { label: 'Classifications', multi: true, values: 
-  ["Ballad", "Clapping", "Complaint", "Dialogue", "Drinking", "Elegy", "Exile",
-  "Flyting", "Historical", "Homeland", "Humorous", "Instructive", "Lament", "Local events and characters",
-  "Love", "Lullaby", "Macaronic", "Milling", "Nature", "Pibroch", "Political", "Port-a-beul", "Praise",
-  "Rann / Duan", "Religious", "Sailing", "Satire", "Spiritual", "Supernatural", "Work"
-  ] },
+  'place_of_origin': {
+    label: 'Origin',
+    multi: false,
+    none: "Unknown",
+    values: ["Nova Scotia", "Scotland"]
+  },
+  'composer_gender': {
+    label: 'Composer Gender',
+    multi: false,
+    none: "Unknown",
+    values: ["Male", "Female"]
+  },
+  'original_format': {
+    label: 'Media',
+    multi: false,
+    values: ["Manuscript", "Newspaper Clipping", "Publication", "Sound Recording"]
+  },
+  'structure': {
+    label: 'Metre',
+    multi: false,
+    values: verseMetres
+  },
+  classifications: {
+    label: 'Classifications',
+    multi: true,
+    values: ["Ballad", "Clapping", "Complaint", "Dialogue", "Drinking", "Elegy", "Exile",
+            "Flyting", "Historical", "Homeland", "Humorous", "Instructive", "Lament",
+            "Local events and characters", "Love", "Lullaby", "Macaronic", "Milling",
+            "Nature", "Pibroch", "Political", "Port-a-beul", "Praise", "Rann / Duan",
+            "Religious", "Sailing", "Satire", "Spiritual", "Supernatural", "Work"
+            ]
+  },
 };
 
 const fieldDescriptors = {

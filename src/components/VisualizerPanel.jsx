@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 
 import { Group } from '@visx/group';
+import Pie from '@visx/shape/lib/shapes/Pie';
 import { Treemap, hierarchy, stratify, treemapSquarify } from '@visx/hierarchy';
 
 import { intersection } from 'underscore';
@@ -22,19 +23,42 @@ const colorPalette16 = [
     "#ff5722", "#00bcd4", "#3f51b5", "#cddc39",
 ];
 
+const vizTypes = ["Pie Chart", "Treemap"];
+
 const width = 900;
 const height = 600;
+const pieRadius = (height / 2) - 20;
+const centerX = width / 2;
+const centerY = height / 2;
 
 function VisualizerPanel() {
     const [state] = useContext(FacetContext);
     const dbInterface = state.dbInterface;
     const facetLabels = dbInterface.getFacetLabels();
 
+    const [vizType, setVizType] = useState(vizTypes[0]);
+    const [treeRoot, setTreeRoot] = useState(null);
     const [facet1, setFacet1] = useState(0);
     const [facet2, setFacet2] = useState(1);
-    const [root, setRoot] = useState(null);
+    const [pieData, setPieData] = useState(null);
+    const [pFacet, setPFacet] = useState(0);
 
     function createViz() {
+      switch(vizType) {
+      case "Pie Chart":
+        let newPieData = [];
+        let maxSize = 0;
+        const fValues = dbInterface.getFacetValues(pFacet);
+        fValues.forEach(function(fVal, fValIndex) {
+          const fIndices = dbInterface.getFacetValueIndices(pFacet, fValIndex);
+          const fSize = fIndices.length;
+          maxSize = (fSize > maxSize) ? fSize : maxSize;
+          newPieData.push({ label: fVal, size: fSize });
+        });
+        setTreeRoot(null);
+        setPieData(newPieData);
+        break;
+      case "Treemap":
         let newData = [{ id: "-1", label: '', parent: null, size: 0, a2: -1 }];
         const f1Values = dbInterface.getFacetValues(facet1);
         const f2Values = dbInterface.getFacetValues(facet2);
@@ -59,23 +83,40 @@ function VisualizerPanel() {
             .sum((d) => d.size);
         const newRoot = hierarchy(stratData)
             .sort((a, b) => b.value - a.value);
-        setRoot(newRoot);
+        setPieData(null);
+        setTreeRoot(newRoot);
+        break;
+      } // switch
     } // createViz()
+
+    function _setVizType(vIndex) {
+      setVizType(vizTypes[vIndex]);
+    }
 
     return (
       <>
         <Typography>Visualising items filtered by {state.filterDesc}</Typography>
         <Stack direction="row" justifyContent="left" alignItems="center">
-            <SelectFromList name="att1" label="Attribute 1" values={facetLabels} valueSetter={setFacet1} defIndex={0} />
-            <SelectFromList name="att2" label="Attribute 2" values={facetLabels} valueSetter={setFacet2} defIndex={1} />
-            <Button size="small" variant="contained" onClick={createViz} sx={{ padding: '6px' }}>
-                  Create Treemap
-            </Button>
+          <SelectFromList name="vizType" label="Visualisation" values={vizTypes} valueSetter={_setVizType} defIndex={0} />
+          { (vizType === "Pie Chart") && (
+            <>
+              <SelectFromList name="pFacet" label="Facet" values={facetLabels} valueSetter={setPFacet} defIndex={pFacet} />
+            </>
+          )}
+          { (vizType === "Treemap") && (
+            <>
+              <SelectFromList name="facet1" label="Facet 1" values={facetLabels} valueSetter={setFacet1} defIndex={facet1} />
+              <SelectFromList name="facet2" label="Facet 2" values={facetLabels} valueSetter={setFacet2} defIndex={facet2} />
+            </>
+          )}
+          <Button size="small" variant="contained" onClick={createViz} sx={{ padding: '6px' }}>
+            Create {vizType}
+          </Button>
         </Stack>
-        { (root !== null) &&
-          <svg width={width} height={height}>
-            <rect width={width} height={height} rx={8} fill={background} />
-            <Treemap top={0} root={root} size={[width, height]} tile={treemapSquarify} round>
+        <svg width={width} height={height}>
+          <rect width={width} height={height} rx={8} fill={background} />
+          { (treeRoot !== null) &&
+            <Treemap top={0} root={treeRoot} size={[width, height]} tile={treemapSquarify} round>
               {(treemap) => (
                 <Group>
                   { treemap.descendants().map((node, i) => {
@@ -98,7 +139,36 @@ function VisualizerPanel() {
                 </Group>
             )}
           </Treemap>
-        </svg>}
+          }
+          { (pieData !== null) &&
+            <Group top={centerY} left={centerX}>
+              <Pie data={pieData} pieValue={(p) => p.size} pieSortValues={() => -1} outerRadius={pieRadius}>
+                {(pie) =>
+                pie.arcs.map((arc, index) => {
+                  const { label } = arc.data;
+                  const [centroidX, centroidY] = pie.path.centroid(arc);
+                  const hasSpaceForLabel = arc.endAngle - arc.startAngle >= 0.1;
+                  const arcPath = pie.path(arc);
+                  const arcFill = colorPalette16[index & 15];
+                  return (
+                    <g key={`arc-${label}`}>
+                      <path d={arcPath} fill={arcFill}>
+                        <title>{ arc.data.label + ': ' + arc.data.size }</title>
+                      </path>
+                        { hasSpaceForLabel && (
+                          <text x={centroidX} y={centroidY} dy=".33em" fill="black"
+                            fontSize={14} textAnchor="middle" pointerEvents="none">
+                            { arc.data.label }
+                          </text>
+                        )}
+                    </g>
+                  )
+                })
+              }
+            </Pie>
+          </Group>
+          }
+        </svg>
       </>
     )
 } // VisualizerPanel()
